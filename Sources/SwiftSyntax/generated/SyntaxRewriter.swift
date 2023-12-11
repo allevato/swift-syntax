@@ -1042,6 +1042,13 @@ open class SyntaxRewriter {
     return DeclSyntax(visitChildren(node))
   }
   
+  /// Visit a ``ImportLocalNameClauseSyntax``.
+  ///   - Parameter node: the node that is being visited
+  ///   - Returns: the rewritten node
+  open func visit(_ node: ImportLocalNameClauseSyntax) -> ImportLocalNameClauseSyntax {
+    return visitChildren(node)
+  }
+  
   /// Visit a ``ImportPathComponentListSyntax``.
   ///   - Parameter node: the node that is being visited
   ///   - Returns: the rewritten node
@@ -2664,6 +2671,10 @@ open class SyntaxRewriter {
       return {
         self.visitImpl($0, ImportDeclSyntax.self, self.visit)
       }
+    case .importLocalNameClause:
+      return {
+        self.visitImpl($0, ImportLocalNameClauseSyntax.self, self.visit)
+      }
     case .importPathComponentList:
       return {
         self.visitImpl($0, ImportPathComponentListSyntax.self, self.visit)
@@ -3512,6 +3523,8 @@ open class SyntaxRewriter {
       return visitImpl(node, ImplicitlyUnwrappedOptionalTypeSyntax.self, visit)
     case .importDecl:
       return visitImpl(node, ImportDeclSyntax.self, visit)
+    case .importLocalNameClause:
+      return visitImpl(node, ImportLocalNameClauseSyntax.self, visit)
     case .importPathComponentList:
       return visitImpl(node, ImportPathComponentListSyntax.self, visit)
     case .importPathComponent:

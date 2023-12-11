@@ -18,11 +18,20 @@ public let DECL_NODES: [Node] = [
     children: [
       Child(
         name: "name",
-        kind: .token(choices: [
-          .token(.identifier),
-          .token(.binaryOperator),
-          .token(.prefixOperator),
-          .token(.postfixOperator),
+        kind: .nodeChoices(choices: [
+          Child(
+            name: "identifier",
+            kind: .token(choices: [
+              .token(.identifier),
+              .token(.binaryOperator),
+              .token(.prefixOperator),
+              .token(.postfixOperator),
+            ])
+          ),
+          Child(
+            name: "string",
+            kind: .node(kind: .simpleStringLiteralExpr)
+          ),
         ]),
         nameForDiagnostics: "name"
       ),
@@ -1154,6 +1163,29 @@ public let DECL_NODES: [Node] = [
         name: "path",
         kind: .collection(kind: .importPathComponentList, collectionElementName: "PathComponent"),
         documentation: "The path to the module, submodule or symbol being imported."
+      ),
+      Child(
+        name: "localNameClause",
+        kind: .node(kind: .importLocalNameClause),
+        // experimentalFeature: T##ExperimentalFeature?,
+        isOptional: true
+      )
+    ]
+  ),
+
+  Node(
+    kind: .importLocalNameClause,
+    base: .syntax,
+    nameForDiagnostics: "import local name",
+    children: [
+      Child(
+        name: "asKeyword",
+        kind: .token(choices: [.keyword(.as)])
+      ),
+      Child(
+        name: "localName",
+        kind: .token(choices: [.token(.identifier)]),
+        documentation: "The local name to use to reference the module within the source file."
       ),
     ]
   ),

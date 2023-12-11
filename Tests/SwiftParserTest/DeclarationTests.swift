@@ -25,6 +25,18 @@ final class DeclarationTests: ParserTestCase {
     assertParse("@_exported import class Foundation.Thread")
 
     assertParse(#"@_private(sourceFile: "YetAnotherFile.swift") import Foundation"#)
+
+    assertParse(
+      #"import ReallyLongModuleName as RLMN"#,
+      experimentalFeatures: [.renamedImports])
+
+    assertParse(
+      #"import struct "Name+With-NonID/Characters".SomeStruct"#,
+      experimentalFeatures: [.renamedImports])
+
+    assertParse(
+      #"import "Name+With-NonID/Characters" as Name"#,
+      experimentalFeatures: [.renamedImports])
   }
 
   func testStructParsing() {

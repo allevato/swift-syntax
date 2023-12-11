@@ -1684,6 +1684,18 @@ open class SyntaxVisitor {
   open func visitPost(_ node: ImportDeclSyntax) {
   }
   
+  /// Visiting ``ImportLocalNameClauseSyntax`` specifically.
+  ///   - Parameter node: the node we are visiting.
+  ///   - Returns: how should we continue visiting.
+  open func visit(_ node: ImportLocalNameClauseSyntax) -> SyntaxVisitorContinueKind {
+    return .visitChildren
+  }
+  
+  /// The function called after visiting ``ImportLocalNameClauseSyntax`` and its descendants.
+  ///   - node: the node we just finished visiting.
+  open func visitPost(_ node: ImportLocalNameClauseSyntax) {
+  }
+  
   /// Visiting ``ImportPathComponentListSyntax`` specifically.
   ///   - Parameter node: the node we are visiting.
   ///   - Returns: how should we continue visiting.
@@ -3992,6 +4004,10 @@ open class SyntaxVisitor {
       return {
         self.visitImpl($0, ImportDeclSyntax.self, self.visit, self.visitPost)
       }
+    case .importLocalNameClause:
+      return {
+        self.visitImpl($0, ImportLocalNameClauseSyntax.self, self.visit, self.visitPost)
+      }
     case .importPathComponentList:
       return {
         self.visitImpl($0, ImportPathComponentListSyntax.self, self.visit, self.visitPost)
@@ -4843,6 +4859,8 @@ open class SyntaxVisitor {
       visitImpl(node, ImplicitlyUnwrappedOptionalTypeSyntax.self, visit, visitPost)
     case .importDecl:
       visitImpl(node, ImportDeclSyntax.self, visit, visitPost)
+    case .importLocalNameClause:
+      visitImpl(node, ImportLocalNameClauseSyntax.self, visit, visitPost)
     case .importPathComponentList:
       visitImpl(node, ImportPathComponentListSyntax.self, visit, visitPost)
     case .importPathComponent:

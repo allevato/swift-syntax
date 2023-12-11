@@ -155,6 +155,7 @@ public enum SyntaxKind {
   case implementsAttributeArguments
   case implicitlyUnwrappedOptionalType
   case importDecl
+  case importLocalNameClause
   case importPathComponentList
   case importPathComponent
   case inOutExpr
@@ -702,6 +703,8 @@ public enum SyntaxKind {
       return ImplicitlyUnwrappedOptionalTypeSyntax.self
     case .importDecl:
       return ImportDeclSyntax.self
+    case .importLocalNameClause:
+      return ImportLocalNameClauseSyntax.self
     case .importPathComponentList:
       return ImportPathComponentListSyntax.self
     case .importPathComponent:

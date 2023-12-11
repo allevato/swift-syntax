@@ -905,6 +905,7 @@ public struct SequenceExprSyntax: ExprSyntaxProtocol, SyntaxHashable, _LeafExprS
 /// ### Contained in
 /// 
 ///  - ``AvailabilityLabeledArgumentSyntax``.``AvailabilityLabeledArgumentSyntax/value``
+///  - ``ImportPathComponentSyntax``.``ImportPathComponentSyntax/name``
 ///  - ``PoundSourceLocationArgumentsSyntax``.``PoundSourceLocationArgumentsSyntax/fileName``
 public struct SimpleStringLiteralExprSyntax: ExprSyntaxProtocol, SyntaxHashable, _LeafExprSyntaxNodeProtocol {
   public let _syntaxNode: Syntax

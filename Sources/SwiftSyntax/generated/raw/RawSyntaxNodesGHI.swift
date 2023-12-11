@@ -1562,11 +1562,13 @@ public struct RawImportDeclSyntax: RawDeclSyntaxNodeProtocol {
       importKindSpecifier: RawTokenSyntax?, 
       _ unexpectedBetweenImportKindSpecifierAndPath: RawUnexpectedNodesSyntax? = nil, 
       path: RawImportPathComponentListSyntax, 
-      _ unexpectedAfterPath: RawUnexpectedNodesSyntax? = nil, 
+      _ unexpectedBetweenPathAndLocalNameClause: RawUnexpectedNodesSyntax? = nil, 
+      localNameClause: RawImportLocalNameClauseSyntax?, 
+      _ unexpectedAfterLocalNameClause: RawUnexpectedNodesSyntax? = nil, 
       arena: __shared SyntaxArena
     ) {
     let raw = RawSyntax.makeLayout(
-      kind: .importDecl, uninitializedCount: 11, arena: arena) { layout in
+      kind: .importDecl, uninitializedCount: 13, arena: arena) { layout in
       layout.initialize(repeating: nil)
       layout[0] = unexpectedBeforeAttributes?.raw
       layout[1] = attributes.raw
@@ -1578,7 +1580,9 @@ public struct RawImportDeclSyntax: RawDeclSyntaxNodeProtocol {
       layout[7] = importKindSpecifier?.raw
       layout[8] = unexpectedBetweenImportKindSpecifierAndPath?.raw
       layout[9] = path.raw
-      layout[10] = unexpectedAfterPath?.raw
+      layout[10] = unexpectedBetweenPathAndLocalNameClause?.raw
+      layout[11] = localNameClause?.raw
+      layout[12] = unexpectedAfterLocalNameClause?.raw
     }
     self.init(unchecked: raw)
   }
@@ -1623,8 +1627,86 @@ public struct RawImportDeclSyntax: RawDeclSyntaxNodeProtocol {
     layoutView.children[9].map(RawImportPathComponentListSyntax.init(raw:))!
   }
   
-  public var unexpectedAfterPath: RawUnexpectedNodesSyntax? {
+  public var unexpectedBetweenPathAndLocalNameClause: RawUnexpectedNodesSyntax? {
     layoutView.children[10].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+  
+  public var localNameClause: RawImportLocalNameClauseSyntax? {
+    layoutView.children[11].map(RawImportLocalNameClauseSyntax.init(raw:))
+  }
+  
+  public var unexpectedAfterLocalNameClause: RawUnexpectedNodesSyntax? {
+    layoutView.children[12].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+}
+
+@_spi(RawSyntax)
+public struct RawImportLocalNameClauseSyntax: RawSyntaxNodeProtocol {
+  @_spi(RawSyntax)
+  public var layoutView: RawSyntaxLayoutView {
+    return raw.layoutView!
+  }
+  
+  public static func isKindOf(_ raw: RawSyntax) -> Bool {
+    return raw.kind == .importLocalNameClause
+  }
+  
+  public var raw: RawSyntax
+  
+  init(raw: RawSyntax) {
+    precondition(Self.isKindOf(raw))
+    self.raw = raw
+  }
+  
+  private init(unchecked raw: RawSyntax) {
+    self.raw = raw
+  }
+  
+  public init?(_ other: some RawSyntaxNodeProtocol) {
+    guard Self.isKindOf(other.raw) else {
+      return nil
+    }
+    self.init(unchecked: other.raw)
+  }
+  
+  public init(
+      _ unexpectedBeforeAsKeyword: RawUnexpectedNodesSyntax? = nil, 
+      asKeyword: RawTokenSyntax, 
+      _ unexpectedBetweenAsKeywordAndLocalName: RawUnexpectedNodesSyntax? = nil, 
+      localName: RawTokenSyntax, 
+      _ unexpectedAfterLocalName: RawUnexpectedNodesSyntax? = nil, 
+      arena: __shared SyntaxArena
+    ) {
+    let raw = RawSyntax.makeLayout(
+      kind: .importLocalNameClause, uninitializedCount: 5, arena: arena) { layout in
+      layout.initialize(repeating: nil)
+      layout[0] = unexpectedBeforeAsKeyword?.raw
+      layout[1] = asKeyword.raw
+      layout[2] = unexpectedBetweenAsKeywordAndLocalName?.raw
+      layout[3] = localName.raw
+      layout[4] = unexpectedAfterLocalName?.raw
+    }
+    self.init(unchecked: raw)
+  }
+  
+  public var unexpectedBeforeAsKeyword: RawUnexpectedNodesSyntax? {
+    layoutView.children[0].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+  
+  public var asKeyword: RawTokenSyntax {
+    layoutView.children[1].map(RawTokenSyntax.init(raw:))!
+  }
+  
+  public var unexpectedBetweenAsKeywordAndLocalName: RawUnexpectedNodesSyntax? {
+    layoutView.children[2].map(RawUnexpectedNodesSyntax.init(raw:))
+  }
+  
+  public var localName: RawTokenSyntax {
+    layoutView.children[3].map(RawTokenSyntax.init(raw:))!
+  }
+  
+  public var unexpectedAfterLocalName: RawUnexpectedNodesSyntax? {
+    layoutView.children[4].map(RawUnexpectedNodesSyntax.init(raw:))
   }
 }
 
@@ -1680,6 +1762,36 @@ public struct RawImportPathComponentListSyntax: RawSyntaxNodeProtocol {
 
 @_spi(RawSyntax)
 public struct RawImportPathComponentSyntax: RawSyntaxNodeProtocol {
+  public enum Name: RawSyntaxNodeProtocol {
+    case `identifier`(RawTokenSyntax)
+    case `string`(RawSimpleStringLiteralExprSyntax)
+    
+    public static func isKindOf(_ raw: RawSyntax) -> Bool {
+      return RawTokenSyntax.isKindOf(raw) || RawSimpleStringLiteralExprSyntax.isKindOf(raw)
+    }
+    
+    public var raw: RawSyntax {
+      switch self {
+      case .identifier(let node):
+        return node.raw
+      case .string(let node):
+        return node.raw
+      }
+    }
+    
+    public init?(_ other: some RawSyntaxNodeProtocol) {
+      if let node = RawTokenSyntax(other) {
+        self = .identifier(node)
+        return
+      }
+      if let node = RawSimpleStringLiteralExprSyntax(other) {
+        self = .string(node)
+        return
+      }
+      return nil
+    }
+  }
+  
   @_spi(RawSyntax)
   public var layoutView: RawSyntaxLayoutView {
     return raw.layoutView!
@@ -1709,7 +1821,7 @@ public struct RawImportPathComponentSyntax: RawSyntaxNodeProtocol {
   
   public init(
       _ unexpectedBeforeName: RawUnexpectedNodesSyntax? = nil, 
-      name: RawTokenSyntax, 
+      name: Name, 
       _ unexpectedBetweenNameAndTrailingPeriod: RawUnexpectedNodesSyntax? = nil, 
       trailingPeriod: RawTokenSyntax?, 
       _ unexpectedAfterTrailingPeriod: RawUnexpectedNodesSyntax? = nil, 
@@ -1731,8 +1843,8 @@ public struct RawImportPathComponentSyntax: RawSyntaxNodeProtocol {
     layoutView.children[0].map(RawUnexpectedNodesSyntax.init(raw:))
   }
   
-  public var name: RawTokenSyntax {
-    layoutView.children[1].map(RawTokenSyntax.init(raw:))!
+  public var name: RawSyntax {
+    layoutView.children[1]!
   }
   
   public var unexpectedBetweenNameAndTrailingPeriod: RawUnexpectedNodesSyntax? {

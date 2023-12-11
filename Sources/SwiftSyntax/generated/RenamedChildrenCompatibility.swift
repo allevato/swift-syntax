@@ -4014,7 +4014,7 @@ extension ImportDeclSyntax {
     }
   }
   
-  @available(*, deprecated, renamed: "ImportDeclSyntax(leadingTrivia:_:attributes:_:modifiers:_:importKeyword:_:importKindSpecifier:_:path:_:trailingTrivia:)")
+  @available(*, deprecated, renamed: "ImportDeclSyntax(leadingTrivia:_:attributes:_:modifiers:_:importKeyword:_:importKindSpecifier:_:path:_:localNameClause:_:trailingTrivia:)")
   @_disfavoredOverload
   public init(
       leadingTrivia: Trivia? = nil,
@@ -4028,7 +4028,9 @@ extension ImportDeclSyntax {
       importKind: TokenSyntax? = nil,
       _ unexpectedBetweenImportKindAndPath: UnexpectedNodesSyntax? = nil,
       path: ImportPathComponentListSyntax,
-      _ unexpectedAfterPath: UnexpectedNodesSyntax? = nil,
+      _ unexpectedBetweenPathAndLocalNameClause: UnexpectedNodesSyntax? = nil,
+      localNameClause: ImportLocalNameClauseSyntax? = nil,
+      _ unexpectedAfterLocalNameClause: UnexpectedNodesSyntax? = nil,
       trailingTrivia: Trivia? = nil
     
   ) {
@@ -4044,7 +4046,9 @@ extension ImportDeclSyntax {
         importKindSpecifier: importKind, 
         unexpectedBetweenImportKindAndPath, 
         path: path, 
-        unexpectedAfterPath, 
+        unexpectedBetweenPathAndLocalNameClause, 
+        localNameClause: localNameClause, 
+        unexpectedAfterLocalNameClause, 
         trailingTrivia: trailingTrivia
       )
   }
@@ -4086,7 +4090,7 @@ extension ImportPathComponentSyntax {
   public init(
       leadingTrivia: Trivia? = nil,
       _ unexpectedBeforeName: UnexpectedNodesSyntax? = nil,
-      name: TokenSyntax,
+      name: Name,
       _ unexpectedBetweenNameAndTrailingDot: UnexpectedNodesSyntax? = nil,
       trailingDot: TokenSyntax? = nil,
       _ unexpectedAfterTrailingDot: UnexpectedNodesSyntax? = nil,

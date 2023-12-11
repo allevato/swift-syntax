@@ -1656,6 +1656,7 @@ extension Syntax {
           .node(ImplementsAttributeArgumentsSyntax.self),
           .node(ImplicitlyUnwrappedOptionalTypeSyntax.self),
           .node(ImportDeclSyntax.self),
+          .node(ImportLocalNameClauseSyntax.self),
           .node(ImportPathComponentListSyntax.self),
           .node(ImportPathComponentSyntax.self),
           .node(InOutExprSyntax.self),

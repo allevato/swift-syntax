@@ -159,6 +159,7 @@ public enum SyntaxNodeKind: String, CaseIterable {
   case implementsAttributeArguments
   case implicitlyUnwrappedOptionalType
   case importDecl
+  case importLocalNameClause
   case importPathComponent
   case importPathComponentList
   case infixOperatorExpr

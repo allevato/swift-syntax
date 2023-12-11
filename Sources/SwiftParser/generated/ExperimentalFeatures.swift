@@ -41,4 +41,7 @@ extension Parser.ExperimentalFeatures {
   
   /// Whether to enable the parsing of strict concurrency for globals.
   public static let globalConcurrency = Self (rawValue: 1 << 5)
+  
+  /// Whether to enable the parsing of renamed imports.
+  public static let renamedImports = Self (rawValue: 1 << 6)
 }

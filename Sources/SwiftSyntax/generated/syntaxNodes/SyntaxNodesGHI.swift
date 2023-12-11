@@ -2818,6 +2818,7 @@ public struct ImplicitlyUnwrappedOptionalTypeSyntax: TypeSyntaxProtocol, SyntaxH
 ///  - `importKeyword`: `import`
 ///  - `importKindSpecifier`: (`typealias` | `struct` | `class` | `enum` | `protocol` | `var` | `let` | `func` | `inout`)?
 ///  - `path`: ``ImportPathComponentListSyntax``
+///  - `localNameClause`: ``ImportLocalNameClauseSyntax``?
 public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyntaxNodeProtocol {
   public let _syntaxNode: Syntax
   
@@ -2848,7 +2849,9 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
       importKindSpecifier: TokenSyntax? = nil,
       _ unexpectedBetweenImportKindSpecifierAndPath: UnexpectedNodesSyntax? = nil,
       path: ImportPathComponentListSyntax,
-      _ unexpectedAfterPath: UnexpectedNodesSyntax? = nil,
+      _ unexpectedBetweenPathAndLocalNameClause: UnexpectedNodesSyntax? = nil,
+      localNameClause: ImportLocalNameClauseSyntax? = nil,
+      _ unexpectedAfterLocalNameClause: UnexpectedNodesSyntax? = nil,
       trailingTrivia: Trivia? = nil
     
   ) {
@@ -2865,7 +2868,9 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
             importKindSpecifier, 
             unexpectedBetweenImportKindSpecifierAndPath, 
             path, 
-            unexpectedAfterPath
+            unexpectedBetweenPathAndLocalNameClause, 
+            localNameClause, 
+            unexpectedAfterLocalNameClause
           ))) { (arena, _) in
       let layout: [RawSyntax?] = [
           unexpectedBeforeAttributes?.raw, 
@@ -2878,7 +2883,9 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
           importKindSpecifier?.raw, 
           unexpectedBetweenImportKindSpecifierAndPath?.raw, 
           path.raw, 
-          unexpectedAfterPath?.raw
+          unexpectedBetweenPathAndLocalNameClause?.raw, 
+          localNameClause?.raw, 
+          unexpectedAfterLocalNameClause?.raw
         ]
       let raw = RawSyntax.makeLayout(
         kind: SyntaxKind.importDecl,
@@ -3087,12 +3094,30 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
       .cast(ImportDeclSyntax.self)
   }
   
-  public var unexpectedAfterPath: UnexpectedNodesSyntax? {
+  public var unexpectedBetweenPathAndLocalNameClause: UnexpectedNodesSyntax? {
     get {
       return Syntax(self).child(at: 10)?.cast(UnexpectedNodesSyntax.self)
     }
     set(value) {
       self = Syntax(self).replacingChild(at: 10, with: Syntax(value), arena: SyntaxArena()).cast(ImportDeclSyntax.self)
+    }
+  }
+  
+  public var localNameClause: ImportLocalNameClauseSyntax? {
+    get {
+      return Syntax(self).child(at: 11)?.cast(ImportLocalNameClauseSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 11, with: Syntax(value), arena: SyntaxArena()).cast(ImportDeclSyntax.self)
+    }
+  }
+  
+  public var unexpectedAfterLocalNameClause: UnexpectedNodesSyntax? {
+    get {
+      return Syntax(self).child(at: 12)?.cast(UnexpectedNodesSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 12, with: Syntax(value), arena: SyntaxArena()).cast(ImportDeclSyntax.self)
     }
   }
   
@@ -3108,7 +3133,135 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
           \Self.importKindSpecifier, 
           \Self.unexpectedBetweenImportKindSpecifierAndPath, 
           \Self.path, 
-          \Self.unexpectedAfterPath
+          \Self.unexpectedBetweenPathAndLocalNameClause, 
+          \Self.localNameClause, 
+          \Self.unexpectedAfterLocalNameClause
+        ])
+  }
+}
+
+// MARK: - ImportLocalNameClauseSyntax
+
+/// ### Children
+/// 
+///  - `asKeyword`: `as`
+///  - `localName`: `<identifier>`
+///
+/// ### Contained in
+/// 
+///  - ``ImportDeclSyntax``.``ImportDeclSyntax/localNameClause``
+public struct ImportLocalNameClauseSyntax: SyntaxProtocol, SyntaxHashable, _LeafSyntaxNodeProtocol {
+  public let _syntaxNode: Syntax
+  
+  public init?(_ node: some SyntaxProtocol) {
+    guard node.raw.kind == .importLocalNameClause else {
+      return nil
+    }
+    self._syntaxNode = node._syntaxNode
+  }
+  
+  /// - Parameters:
+  ///   - leadingTrivia: Trivia to be prepended to the leading trivia of the node’s first token. If the node is empty, there is no token to attach the trivia to and the parameter is ignored.
+  ///   - localName: The local name to use to reference the module within the source file.
+  ///   - trailingTrivia: Trivia to be appended to the trailing trivia of the node’s last token. If the node is empty, there is no token to attach the trivia to and the parameter is ignored.
+  public init(
+      leadingTrivia: Trivia? = nil,
+      _ unexpectedBeforeAsKeyword: UnexpectedNodesSyntax? = nil,
+      asKeyword: TokenSyntax = .keyword(.as),
+      _ unexpectedBetweenAsKeywordAndLocalName: UnexpectedNodesSyntax? = nil,
+      localName: TokenSyntax,
+      _ unexpectedAfterLocalName: UnexpectedNodesSyntax? = nil,
+      trailingTrivia: Trivia? = nil
+    
+  ) {
+    // Extend the lifetime of all parameters so their arenas don't get destroyed
+    // before they can be added as children of the new arena.
+    self = withExtendedLifetime((SyntaxArena(), (
+            unexpectedBeforeAsKeyword, 
+            asKeyword, 
+            unexpectedBetweenAsKeywordAndLocalName, 
+            localName, 
+            unexpectedAfterLocalName
+          ))) { (arena, _) in
+      let layout: [RawSyntax?] = [
+          unexpectedBeforeAsKeyword?.raw, 
+          asKeyword.raw, 
+          unexpectedBetweenAsKeywordAndLocalName?.raw, 
+          localName.raw, 
+          unexpectedAfterLocalName?.raw
+        ]
+      let raw = RawSyntax.makeLayout(
+        kind: SyntaxKind.importLocalNameClause,
+        from: layout,
+        arena: arena,
+        leadingTrivia: leadingTrivia,
+        trailingTrivia: trailingTrivia
+        
+      )
+      return Syntax.forRoot(raw, rawNodeArena: arena).cast(Self.self)
+    }
+  }
+  
+  public var unexpectedBeforeAsKeyword: UnexpectedNodesSyntax? {
+    get {
+      return Syntax(self).child(at: 0)?.cast(UnexpectedNodesSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 0, with: Syntax(value), arena: SyntaxArena()).cast(ImportLocalNameClauseSyntax.self)
+    }
+  }
+  
+  /// ### Tokens
+  /// 
+  /// For syntax trees generated by the parser, this is guaranteed to be `as`.
+  public var asKeyword: TokenSyntax {
+    get {
+      return Syntax(self).child(at: 1)!.cast(TokenSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 1, with: Syntax(value), arena: SyntaxArena()).cast(ImportLocalNameClauseSyntax.self)
+    }
+  }
+  
+  public var unexpectedBetweenAsKeywordAndLocalName: UnexpectedNodesSyntax? {
+    get {
+      return Syntax(self).child(at: 2)?.cast(UnexpectedNodesSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 2, with: Syntax(value), arena: SyntaxArena()).cast(ImportLocalNameClauseSyntax.self)
+    }
+  }
+  
+  /// The local name to use to reference the module within the source file.
+  ///
+  /// ### Tokens
+  /// 
+  /// For syntax trees generated by the parser, this is guaranteed to be `<identifier>`.
+  public var localName: TokenSyntax {
+    get {
+      return Syntax(self).child(at: 3)!.cast(TokenSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 3, with: Syntax(value), arena: SyntaxArena()).cast(ImportLocalNameClauseSyntax.self)
+    }
+  }
+  
+  public var unexpectedAfterLocalName: UnexpectedNodesSyntax? {
+    get {
+      return Syntax(self).child(at: 4)?.cast(UnexpectedNodesSyntax.self)
+    }
+    set(value) {
+      self = Syntax(self).replacingChild(at: 4, with: Syntax(value), arena: SyntaxArena()).cast(ImportLocalNameClauseSyntax.self)
+    }
+  }
+  
+  public static var structure: SyntaxNodeStructure {
+    return .layout([
+          \Self.unexpectedBeforeAsKeyword, 
+          \Self.asKeyword, 
+          \Self.unexpectedBetweenAsKeywordAndLocalName, 
+          \Self.localName, 
+          \Self.unexpectedAfterLocalName
         ])
   }
 }
@@ -3117,13 +3270,95 @@ public struct ImportDeclSyntax: DeclSyntaxProtocol, SyntaxHashable, _LeafDeclSyn
 
 /// ### Children
 /// 
-///  - `name`: (`<identifier>` | `<binaryOperator>` | `<prefixOperator>` | `<postfixOperator>`)
+///  - `name`: ((`<identifier>` | `<binaryOperator>` | `<prefixOperator>` | `<postfixOperator>`) | ``SimpleStringLiteralExprSyntax``)
 ///  - `trailingPeriod`: `.`?
 ///
 /// ### Contained in
 /// 
 ///  - ``ImportPathComponentListSyntax``
 public struct ImportPathComponentSyntax: SyntaxProtocol, SyntaxHashable, _LeafSyntaxNodeProtocol {
+  public enum Name: SyntaxChildChoices, SyntaxHashable {
+    case `identifier`(TokenSyntax)
+    case `string`(SimpleStringLiteralExprSyntax)
+    
+    public var _syntaxNode: Syntax {
+      switch self {
+      case .identifier(let node):
+        return node._syntaxNode
+      case .string(let node):
+        return node._syntaxNode
+      }
+    }
+    
+    public init(_ node: TokenSyntax) {
+      self = .identifier(node)
+    }
+    
+    public init(_ node: SimpleStringLiteralExprSyntax) {
+      self = .string(node)
+    }
+    
+    public init?(_ node: some SyntaxProtocol) {
+      if let node = node.as(TokenSyntax.self) {
+        self = .identifier(node)
+        return
+      }
+      if let node = node.as(SimpleStringLiteralExprSyntax.self) {
+        self = .string(node)
+        return
+      }
+      return nil
+    }
+    
+    public static var structure: SyntaxNodeStructure {
+      return .choices([.node(TokenSyntax.self), .node(SimpleStringLiteralExprSyntax.self)])
+    }
+    
+    /// Checks if the current syntax node can be cast to ``TokenSyntax``.
+    ///
+    /// - Returns: `true` if the node can be cast, `false` otherwise.
+    public func `is`(_ syntaxType: TokenSyntax.Type) -> Bool {
+      return self.as(syntaxType) != nil
+    }
+    
+    /// Attempts to cast the current syntax node to ``TokenSyntax``.
+    ///
+    /// - Returns: An instance of ``TokenSyntax``, or `nil` if the cast fails.
+    public func `as`(_ syntaxType: TokenSyntax.Type) -> TokenSyntax? {
+      return TokenSyntax.init(self)
+    }
+    
+    /// Force-casts the current syntax node to ``TokenSyntax``.
+    ///
+    /// - Returns: An instance of ``TokenSyntax``.
+    /// - Warning: This function will crash if the cast is not possible. Use `as` to safely attempt a cast.
+    public func cast(_ syntaxType: TokenSyntax.Type) -> TokenSyntax {
+      return self.as(TokenSyntax.self)!
+    }
+    
+    /// Checks if the current syntax node can be cast to ``SimpleStringLiteralExprSyntax``.
+    ///
+    /// - Returns: `true` if the node can be cast, `false` otherwise.
+    public func `is`(_ syntaxType: SimpleStringLiteralExprSyntax.Type) -> Bool {
+      return self.as(syntaxType) != nil
+    }
+    
+    /// Attempts to cast the current syntax node to ``SimpleStringLiteralExprSyntax``.
+    ///
+    /// - Returns: An instance of ``SimpleStringLiteralExprSyntax``, or `nil` if the cast fails.
+    public func `as`(_ syntaxType: SimpleStringLiteralExprSyntax.Type) -> SimpleStringLiteralExprSyntax? {
+      return SimpleStringLiteralExprSyntax.init(self)
+    }
+    
+    /// Force-casts the current syntax node to ``SimpleStringLiteralExprSyntax``.
+    ///
+    /// - Returns: An instance of ``SimpleStringLiteralExprSyntax``.
+    /// - Warning: This function will crash if the cast is not possible. Use `as` to safely attempt a cast.
+    public func cast(_ syntaxType: SimpleStringLiteralExprSyntax.Type) -> SimpleStringLiteralExprSyntax {
+      return self.as(SimpleStringLiteralExprSyntax.self)!
+    }
+  }
+  
   public let _syntaxNode: Syntax
   
   public init?(_ node: some SyntaxProtocol) {
@@ -3139,7 +3374,7 @@ public struct ImportPathComponentSyntax: SyntaxProtocol, SyntaxHashable, _LeafSy
   public init(
       leadingTrivia: Trivia? = nil,
       _ unexpectedBeforeName: UnexpectedNodesSyntax? = nil,
-      name: TokenSyntax,
+      name: Name,
       _ unexpectedBetweenNameAndTrailingPeriod: UnexpectedNodesSyntax? = nil,
       trailingPeriod: TokenSyntax? = nil,
       _ unexpectedAfterTrailingPeriod: UnexpectedNodesSyntax? = nil,
@@ -3183,16 +3418,9 @@ public struct ImportPathComponentSyntax: SyntaxProtocol, SyntaxHashable, _LeafSy
     }
   }
   
-  /// ### Tokens
-  /// 
-  /// For syntax trees generated by the parser, this is guaranteed to be one of the following kinds:
-  ///  - `<identifier>`
-  ///  - `<binaryOperator>`
-  ///  - `<prefixOperator>`
-  ///  - `<postfixOperator>`
-  public var name: TokenSyntax {
+  public var name: Name {
     get {
-      return Syntax(self).child(at: 1)!.cast(TokenSyntax.self)
+      return Syntax(self).child(at: 1)!.cast(Name.self)
     }
     set(value) {
       self = Syntax(self).replacingChild(at: 1, with: Syntax(value), arena: SyntaxArena()).cast(ImportPathComponentSyntax.self)

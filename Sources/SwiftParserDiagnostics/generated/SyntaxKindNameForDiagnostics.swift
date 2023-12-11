@@ -217,6 +217,8 @@ extension SyntaxKind {
       return "implicitly unwrapped optional type"
     case .importDecl:
       return "import"
+    case .importLocalNameClause:
+      return "import local name"
     case .inOutExpr:
       return "inout expression"
     case .inheritanceClause:

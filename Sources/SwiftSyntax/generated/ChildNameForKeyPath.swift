@@ -1735,8 +1735,22 @@ public func childName(_ keyPath: AnyKeyPath) -> String? {
     return "unexpectedBetweenImportKindSpecifierAndPath"
   case \ImportDeclSyntax.path:
     return "path"
-  case \ImportDeclSyntax.unexpectedAfterPath:
-    return "unexpectedAfterPath"
+  case \ImportDeclSyntax.unexpectedBetweenPathAndLocalNameClause:
+    return "unexpectedBetweenPathAndLocalNameClause"
+  case \ImportDeclSyntax.localNameClause:
+    return "localNameClause"
+  case \ImportDeclSyntax.unexpectedAfterLocalNameClause:
+    return "unexpectedAfterLocalNameClause"
+  case \ImportLocalNameClauseSyntax.unexpectedBeforeAsKeyword:
+    return "unexpectedBeforeAsKeyword"
+  case \ImportLocalNameClauseSyntax.asKeyword:
+    return "asKeyword"
+  case \ImportLocalNameClauseSyntax.unexpectedBetweenAsKeywordAndLocalName:
+    return "unexpectedBetweenAsKeywordAndLocalName"
+  case \ImportLocalNameClauseSyntax.localName:
+    return "localName"
+  case \ImportLocalNameClauseSyntax.unexpectedAfterLocalName:
+    return "unexpectedAfterLocalName"
   case \ImportPathComponentSyntax.unexpectedBeforeName:
     return "unexpectedBeforeName"
   case \ImportPathComponentSyntax.name:

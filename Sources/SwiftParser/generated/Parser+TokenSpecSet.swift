@@ -1756,61 +1756,6 @@ extension ImportDeclSyntax {
   }
 }
 
-extension ImportPathComponentSyntax {
-  @_spi(Diagnostics)
-  public enum NameOptions: TokenSpecSet {
-    case identifier
-    case binaryOperator
-    case prefixOperator
-    case postfixOperator
-    
-    init?(lexeme: Lexer.Lexeme, experimentalFeatures: Parser.ExperimentalFeatures) {
-      switch PrepareForKeywordMatch(lexeme) {
-      case TokenSpec(.identifier):
-        self = .identifier
-      case TokenSpec(.binaryOperator):
-        self = .binaryOperator
-      case TokenSpec(.prefixOperator):
-        self = .prefixOperator
-      case TokenSpec(.postfixOperator):
-        self = .postfixOperator
-      default:
-        return nil
-      }
-    }
-    
-    var spec: TokenSpec {
-      switch self {
-      case .identifier:
-        return .identifier
-      case .binaryOperator:
-        return .binaryOperator
-      case .prefixOperator:
-        return .prefixOperator
-      case .postfixOperator:
-        return .postfixOperator
-      }
-    }
-    
-    /// Returns a token that satisfies the `TokenSpec` of this case.
-    ///
-    /// If the token kind of this spec has variable text, e.g. for an identifier, this returns a token with empty text.
-    @_spi(Diagnostics)
-    public var tokenSyntax: TokenSyntax {
-      switch self {
-      case .identifier:
-        return .identifier("")
-      case .binaryOperator:
-        return .binaryOperator("")
-      case .prefixOperator:
-        return .prefixOperator("")
-      case .postfixOperator:
-        return .postfixOperator("")
-      }
-    }
-  }
-}
-
 extension InitializerDeclSyntax {
   @_spi(Diagnostics)
   public enum OptionalMarkOptions: TokenSpecSet {

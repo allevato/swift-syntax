@@ -1483,7 +1483,7 @@ func validateLayout(layout: RawSyntaxBuffer, as kind: SyntaxKind) {
     assertNoError(kind, 3, verify(layout[3], as: RawTokenSyntax.self, tokenChoices: [.tokenKind(.exclamationMark)]))
     assertNoError(kind, 4, verify(layout[4], as: RawUnexpectedNodesSyntax?.self))
   case .importDecl:
-    assert(layout.count == 11)
+    assert(layout.count == 13)
     assertNoError(kind, 0, verify(layout[0], as: RawUnexpectedNodesSyntax?.self))
     assertNoError(kind, 1, verify(layout[1], as: RawAttributeListSyntax.self))
     assertNoError(kind, 2, verify(layout[2], as: RawUnexpectedNodesSyntax?.self))
@@ -1505,6 +1505,15 @@ func validateLayout(layout: RawSyntaxBuffer, as kind: SyntaxKind) {
     assertNoError(kind, 8, verify(layout[8], as: RawUnexpectedNodesSyntax?.self))
     assertNoError(kind, 9, verify(layout[9], as: RawImportPathComponentListSyntax.self))
     assertNoError(kind, 10, verify(layout[10], as: RawUnexpectedNodesSyntax?.self))
+    assertNoError(kind, 11, verify(layout[11], as: RawImportLocalNameClauseSyntax?.self))
+    assertNoError(kind, 12, verify(layout[12], as: RawUnexpectedNodesSyntax?.self))
+  case .importLocalNameClause:
+    assert(layout.count == 5)
+    assertNoError(kind, 0, verify(layout[0], as: RawUnexpectedNodesSyntax?.self))
+    assertNoError(kind, 1, verify(layout[1], as: RawTokenSyntax.self, tokenChoices: [.keyword("as")]))
+    assertNoError(kind, 2, verify(layout[2], as: RawUnexpectedNodesSyntax?.self))
+    assertNoError(kind, 3, verify(layout[3], as: RawTokenSyntax.self, tokenChoices: [.tokenKind(.identifier)]))
+    assertNoError(kind, 4, verify(layout[4], as: RawUnexpectedNodesSyntax?.self))
   case .importPathComponentList:
     for (index, element) in layout.enumerated() {
       assertNoError(kind, index, verify(element, as: RawImportPathComponentSyntax.self))
@@ -1512,12 +1521,8 @@ func validateLayout(layout: RawSyntaxBuffer, as kind: SyntaxKind) {
   case .importPathComponent:
     assert(layout.count == 5)
     assertNoError(kind, 0, verify(layout[0], as: RawUnexpectedNodesSyntax?.self))
-    assertNoError(kind, 1, verify(layout[1], as: RawTokenSyntax.self, tokenChoices: [
-            .tokenKind(.identifier), 
-            .tokenKind(.binaryOperator), 
-            .tokenKind(.prefixOperator), 
-            .tokenKind(.postfixOperator)
-          ]))
+    assertAnyHasNoError(kind, 1, [
+        verify(layout[1], as: RawSyntax.self)])
     assertNoError(kind, 2, verify(layout[2], as: RawUnexpectedNodesSyntax?.self))
     assertNoError(kind, 3, verify(layout[3], as: RawTokenSyntax?.self, tokenChoices: [.tokenKind(.period)]))
     assertNoError(kind, 4, verify(layout[4], as: RawUnexpectedNodesSyntax?.self))

@@ -1158,6 +1158,14 @@ open class SyntaxAnyVisitor: SyntaxVisitor {
     visitAnyPost(node._syntaxNode)
   }
   
+  override open func visit(_ node: ImportLocalNameClauseSyntax) -> SyntaxVisitorContinueKind {
+    return visitAny(node._syntaxNode)
+  }
+  
+  override open func visitPost(_ node: ImportLocalNameClauseSyntax) {
+    visitAnyPost(node._syntaxNode)
+  }
+  
   override open func visit(_ node: ImportPathComponentListSyntax) -> SyntaxVisitorContinueKind {
     return visitAny(node._syntaxNode)
   }

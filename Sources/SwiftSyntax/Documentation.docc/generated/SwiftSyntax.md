@@ -361,6 +361,7 @@ These articles are intended for developers wishing to contribute to SwiftSyntax
 - <doc:SwiftSyntax/FunctionSignatureSyntax>
 - <doc:SwiftSyntax/GenericArgumentClauseSyntax>
 - <doc:SwiftSyntax/GenericParameterClauseSyntax>
+- <doc:SwiftSyntax/ImportLocalNameClauseSyntax>
 - <doc:SwiftSyntax/InheritanceClauseSyntax>
 - <doc:SwiftSyntax/InitializerClauseSyntax>
 - <doc:SwiftSyntax/KeyPathOptionalComponentSyntax>

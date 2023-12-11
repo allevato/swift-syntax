@@ -327,6 +327,14 @@ extension Parser {
     let (unexpectedBeforeImportKeyword, importKeyword) = self.eat(handle)
     let kind = self.parseImportKind()
     let path = self.parseImportPath()
+
+    let localNameClause: RawImportLocalNameClauseSyntax?
+    if self.experimentalFeatures.contains(.renamedImports) && self.at(.keyword(.as)) {
+      localNameClause = self.parseImportLocalNameClause()
+    } else {
+      localNameClause = nil
+    }
+
     return RawImportDeclSyntax(
       attributes: attrs.attributes,
       modifiers: attrs.modifiers,
@@ -334,6 +342,7 @@ extension Parser {
       importKeyword: importKeyword,
       importKindSpecifier: kind,
       path: path,
+      localNameClause: localNameClause,
       arena: self.arena
     )
   }
@@ -347,7 +356,12 @@ extension Parser {
     var keepGoing: RawTokenSyntax? = nil
     var loopProgress = LoopProgressCondition()
     repeat {
-      let name = self.parseAnyIdentifier()
+      let name: RawImportPathComponentSyntax.Name
+      if self.experimentalFeatures.contains(.renamedImports) && self.at(.stringQuote) {
+        name = .string(self.parseSimpleString())
+      } else {
+        name = .identifier(self.parseAnyIdentifier())
+      }
       keepGoing = self.consume(if: .period)
       elements.append(
         RawImportPathComponentSyntax(
@@ -358,6 +372,18 @@ extension Parser {
       )
     } while keepGoing != nil && self.hasProgressed(&loopProgress)
     return RawImportPathComponentListSyntax(elements: elements, arena: self.arena)
+  }
+
+  mutating func parseImportLocalNameClause() -> RawImportLocalNameClauseSyntax? {
+    precondition(self.at(.keyword(.as)))
+    let keyword = self.consumeAnyToken()
+    let (unexpectedBeforeLocalName, localName) = self.expect(.identifier)
+    return RawImportLocalNameClauseSyntax(
+      asKeyword: keyword,
+      unexpectedBeforeLocalName,
+      localName: localName,
+      arena: self.arena
+    )
   }
 }
 

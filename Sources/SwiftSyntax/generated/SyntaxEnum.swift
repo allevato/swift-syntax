@@ -155,6 +155,7 @@ public enum SyntaxEnum {
   case implementsAttributeArguments(ImplementsAttributeArgumentsSyntax)
   case implicitlyUnwrappedOptionalType(ImplicitlyUnwrappedOptionalTypeSyntax)
   case importDecl(ImportDeclSyntax)
+  case importLocalNameClause(ImportLocalNameClauseSyntax)
   case importPathComponentList(ImportPathComponentListSyntax)
   case importPathComponent(ImportPathComponentSyntax)
   case inOutExpr(InOutExprSyntax)
@@ -581,6 +582,8 @@ public extension Syntax {
       return .implicitlyUnwrappedOptionalType(ImplicitlyUnwrappedOptionalTypeSyntax(self)!)
     case .importDecl:
       return .importDecl(ImportDeclSyntax(self)!)
+    case .importLocalNameClause:
+      return .importLocalNameClause(ImportLocalNameClauseSyntax(self)!)
     case .importPathComponentList:
       return .importPathComponentList(ImportPathComponentListSyntax(self)!)
     case .importPathComponent:

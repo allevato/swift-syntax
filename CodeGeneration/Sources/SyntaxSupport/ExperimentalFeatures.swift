@@ -19,6 +19,7 @@ public enum ExperimentalFeature: String, CaseIterable {
   case doExpressions
   case nonEscapableTypes
   case globalConcurrency
+  case renamedImports
 
   /// The name of the feature, which is used in the doc comment.
   public var featureName: String {
@@ -35,6 +36,8 @@ public enum ExperimentalFeature: String, CaseIterable {
       return "NonEscableTypes"
     case .globalConcurrency:
       return "strict concurrency for globals"
+    case .renamedImports:
+      return "renamed imports"
     }
   }
 

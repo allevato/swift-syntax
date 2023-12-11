@@ -100,6 +100,31 @@ extension GenericRequirementSyntax {
 @available(*, deprecated, renamed: "NamedDeclSyntax")
 public typealias IdentifiedDeclSyntax = NamedDeclSyntax
 
+extension ImportPathComponentSyntax {
+  @available(
+    *, deprecated, message: "Use initializer taking a `ImportPathComponentSyntax.Name` instead")
+  @_disfavoredOverload
+  public init(
+    leadingTrivia: Trivia? = nil,
+    unexpectedBeforeName: UnexpectedNodesSyntax? = nil,
+    name: TokenSyntax,
+    unexpectedBetweenNameAndTrailingPeriod: UnexpectedNodesSyntax? = nil,
+    trailingPeriod: TokenSyntax? = nil,
+    unexpectedAfterTrailingPeriod: UnexpectedNodesSyntax? = nil,
+    trailingTrivia: Trivia? = nil
+  ) {
+    self.init(
+      leadingTrivia: leadingTrivia,
+      unexpectedBeforeName,
+      name: .identifier(name),
+      unexpectedBetweenNameAndTrailingPeriod,
+      trailingPeriod: trailingPeriod,
+      unexpectedAfterTrailingPeriod,
+      trailingTrivia: trailingTrivia
+    )
+  }
+}
+
 extension KeyPathPropertyComponentSyntax {
   @available(*, deprecated, renamed: "declName.baseName")
   public var identifier: TokenSyntax {
